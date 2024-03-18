@@ -15,7 +15,6 @@ function createCard(link,name) {
   });
   return card;
 }
-
 // @todo: Функция удаления карточки
 function deleteCard (id) {
     const cardItem=document.getElementById(id);
@@ -23,7 +22,6 @@ function deleteCard (id) {
           cardItem.remove();
     }
 }
-
 // @todo: Вывести карточки на страницу
 for (let i = 0; i < initialCards.length; i++) {
     placesList.append(createCard(initialCards[i].link,initialCards[i].name));
