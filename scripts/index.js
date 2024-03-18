@@ -24,6 +24,7 @@ function deleteCard (card) {
     }
   }
 }
+
 // @todo: Вывести карточки на страницу
 for (let i = 0; i < initialCards.length; i++) {
     placesList.append(createCard(initialCards[i],deleteCard));
