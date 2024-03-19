@@ -17,12 +17,7 @@ function createCard(cardData,callback) {
 }
 // @todo: Функция удаления карточки
 function deleteCard (card) {
-   const cards=placesList.getElementsByTagName('li');
-    for (let i = 0; i < cards.length; i++) {
-    if (cards[i]==card){
           card.remove();
-    }
-  }
 }
 
 // @todo: Вывести карточки на страницу
