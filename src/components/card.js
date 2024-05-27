@@ -19,7 +19,7 @@ function createCard(cardData, callback, like, view) {
         like(card.querySelector('.card__like-button'));
     });
     card.querySelector('.card__image').addEventListener('click', function () {
-        view(cardData['name'],cardData['link']);
+        view(cardData['name'], cardData['link']);
     });
     return card;
 }
