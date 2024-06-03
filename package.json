@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build": "rd /s /q dist && webpack",
-    "dev": "webpack server"
+    "dev": "webpack server",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "author": "Alexander Larin",
   "license": "ISC",
@@ -22,6 +24,7 @@
     "clean-webpack-plugin": "^4.0.0",
     "css-loader": "^7.1.1",
     "cssnano": "^6.1.2",
+    "gh-pages": "^6.1.1",
     "html-webpack-plugin": "^5.6.0",
     "mini-css-extract-plugin": "^2.9.0",
     "postcss-loader": "^8.1.1",
