@@ -5,7 +5,7 @@ import {
   initialCards
 } from "./components/cards.js"
 import {
-  deleteCard,
+ // deleteCard,
   likeCard,
   createCard
 } from "./components/card.js"
@@ -30,6 +30,8 @@ hideInputError(popupEdit,popupEdit.querySelector('input[name="description"]'));
 const popupNewCard = document.querySelector('.popup_type_new-card');
 
 getProfileInfo(token,cohort);
+getCards(token,cohort);
+
 //Get user information from server
 function getProfileInfo(token,cohort){
 fetch(`https://nomoreparties.co/v1/${cohort}/users/me`, {
@@ -50,20 +52,71 @@ function updateProfileInfo(name, about, avatar) {
 }
 
 //Вывести карточки на страницу
-fetch('https://nomoreparties.co/v1/wff-cohort-14/cards', {
+function getCards (){
+fetch(`https://nomoreparties.co/v1/${cohort}/cards`, {
   headers: {
-    authorization: '883e0234-47f8-49e4-92ee-690f5802db36'
+    authorization: token
   }
 })
   .then(res => res.json())
   .then((result) => {
-    console.log(result)
-   
-  }); 
+    result.forEach(function (element) {
+      placesList.append(createCard(element, deleteCard, likeCard, viewCard));
+    })
 
-initialCards.forEach(function (element) {
-  placesList.append(createCard(element, deleteCard, likeCard, viewCard));
+  }); 
+}
+
+function patchProfileInfo(name,about) {
+  fetch(`https://nomoreparties.co/v1/${cohort}/users/me`, {
+  method: 'PATCH',
+  headers: {
+    authorization:token,
+   'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    name: name,
+    about: about
+  })
 })
+.then(res => res.json())
+.then((result) => {
+  updateProfileInfo(result.name,result.about,result.avatar)
+}); 
+};
+
+function postCard(name,link) {
+  fetch(`https://nomoreparties.co/v1/${cohort}/cards`, {
+  method: 'POST',
+  headers: {
+    authorization:token,
+   'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    name: name,
+    link: link
+  })
+})
+.then(res => res.json())
+.then((result) => {
+  console.log(result);
+}); 
+};
+
+function deleteCard(cardId) {
+  fetch(`https://nomoreparties.co/v1/${cohort}/cards/${cardId}`, {
+  method: 'DELETE',
+  headers: {
+    authorization:token,
+   'Content-Type': 'application/json'
+  }
+})
+.then(res => res.json())
+.then((result) => {
+  console.log(result);
+}); 
+};
+
 
 //Add event listener for the buttons: profile_edit and add_new_card
 profileEditButton.addEventListener("click", (evt) => {
@@ -88,8 +141,9 @@ popupNewCard.addEventListener('submit', handleFormSubmitAddNewCard);
 function handleFormSubmitEdit(evt) {
     evt.preventDefault();
     const popup = evt.target.closest('.popup');
-    document.querySelector('.profile__description').textContent = popup.querySelector('input[name="description"]').value;
-    document.querySelector('.profile__title').textContent = popup.querySelector('input[name="name"]').value;
+    patchProfileInfo(popup.querySelector('input[name="name"]').value,popup.querySelector('input[name="description"]').value);
+    //document.querySelector('.profile__description').textContent = popup.querySelector('input[name="description"]').value;
+    //document.querySelector('.profile__title').textContent = popup.querySelector('input[name="name"]').value;
     closePopup(popup);  
 }
 
@@ -102,7 +156,7 @@ function handleFormSubmitAddNewCard(evt) {
     };
     newCardData.name = popup.querySelector('input[name="place-name"]').value;
     newCardData.link = popup.querySelector('input[name="link"]').value;
-    document.querySelector('.places__list').prepend(createCard(newCardData, deleteCard, likeCard, viewCard))
+    postCard(popup.querySelector('input[name="place-name"]').value,popup.querySelector('input[name="link"]').value)
     popup.querySelector('input[name="place-name"]').value = "";
     popup.querySelector('input[name="link"]').value = "";
     closePopup(popup);
