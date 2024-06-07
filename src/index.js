@@ -22,7 +22,9 @@ import {
   getCards,
   postCard,
   deleteCard,
-  patchAvatar
+  patchAvatar,
+  likeCard,
+  unlikeCard
 } from "./components/api.js"
 
 //DOM узлы
@@ -48,7 +50,7 @@ getProfileInfo()
     updateProfileInfo(result.name, result.about, result.avatar)
   })
   .catch(error => {
-    console.error('Error fetching data:', error);
+    console.log(error);
   });
 
 getCards()
@@ -59,69 +61,12 @@ getCards()
     })
   })
   .catch(error => {
-    console.error('Error fetching data:', error);
+    console.log(error);
   });
 
 
-
-
-function likeCard(cardId) {
-  fetch(`https://nomoreparties.co/v1/${cohort}/cards/likes/${cardId}`, {
-    method: 'PUT',
-    headers: {
-      authorization: token,
-      'Content-Type': 'application/json'
-    },
-  })
-    .then(res => res.json())
-    .then((result) => {
-      console.log(result);
-      getCards()
-        .then((result) => {
-          placesList.innerHTML = '';
-          result.forEach(function (element) {
-            placesList.append(createCard(element, deleteCard, likeCard, unlikeCard, viewCard));
-          })
-        })
-        .catch(error => {
-          console.error('Error fetching data:', error);
-        });
-    });
-};
-
-
-
-function unlikeCard(cardId) {
-  fetch(`https://nomoreparties.co/v1/${cohort}/cards/likes/${cardId}`, {
-    method: 'DELETE',
-    headers: {
-      authorization: token,
-      'Content-Type': 'application/json'
-    },
-  })
-    .then(res => res.json())
-    .then((result) => {
-      console.log(result);
-      getCards()
-        .then((result) => {
-          placesList.innerHTML = '';
-          result.forEach(function (element) {
-            placesList.append(createCard(element, deleteCard, likeCard, unlikeCard, viewCard));
-          })
-        })
-        .catch(error => {
-          console.error('Error fetching data:', error);
-        });
-    });
-};
-
-
-
-
-
-
 placesList.addEventListener("click", (evt) => {
-  if (evt.target.classList.contains('card__delete-button')) {
+  if (evt.target.classList.contains('card__delete-button') || evt.target.classList.contains('card__like-button')) {
     getCards()
       .then((result) => {
         placesList.innerHTML = '';
@@ -130,7 +75,7 @@ placesList.addEventListener("click", (evt) => {
         })
       })
       .catch(error => {
-        console.error('Error fetching data:', error);
+        console.log(error);
       });
   }
 })
@@ -170,14 +115,14 @@ function handleFormSubmitEdit(evt) {
       updateProfileInfo(result.name, result.about, result.avatar)
     })
     .catch(error => {
-      console.error('Error fetching data:', error);
+      console.log(error);
     });
   getProfileInfo()
     .then((result) => {
       updateProfileInfo(result.name, result.about, result.avatar)
     })
     .catch(error => {
-      console.error('Error fetching data:', error);
+      console.log(error);
     });
   closePopup(popup);
 }
@@ -201,11 +146,11 @@ function handleFormSubmitAddNewCard(evt) {
           })
         })
         .catch(error => {
-          console.error('Error fetching data:', error);
+          console.log(error);
         });
     })
     .catch(error => {
-      console.error('Error fetching data:', error);
+      console.log(error);
     });
 
   popup.querySelector('input[name="place-name"]').value = "";
@@ -222,7 +167,7 @@ function handleFormSubmitAvatar(evt) {
       console.log(result)
     })
     .catch(error => {
-      console.error('Error fetching data:', error);
+      console.log(error);
     });
 
   popup.querySelector('input[name="link"]').value = "";
@@ -231,7 +176,7 @@ function handleFormSubmitAvatar(evt) {
       updateProfileInfo(result.name, result.about, result.avatar)
     })
     .catch(error => {
-      console.error('Error fetching data:', error);
+      console.log(error);
     });
   closePopup(popup);
 }
