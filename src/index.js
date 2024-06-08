@@ -45,28 +45,15 @@ function updateProfileInfo(name, about, avatar) {
 let userId;
 Promise.all([getProfileInfo(), getCards()])
 .then(([userData, cards]) => {
+    console.log(userData);
+    console.log(cards);
     userId = userData._id;
     updateProfileInfo(userData.name, userData.about, userData.avatar)
     cards.forEach(function (element) {
-      placesList.append(createCard(element, deleteCard, likeCard, unlikeCard, viewCard));
+      placesList.append(createCard(element, deleteCard, likeCard, unlikeCard, viewCard,userId));
     })
 }).catch(error => console.log(error))
 
-
-placesList.addEventListener("click", (evt) => {
-  if (evt.target.classList.contains('card__delete-button') || evt.target.classList.contains('card__like-button')) {
-    getCards()
-      .then((result) => {
-        placesList.innerHTML = '';
-        result.forEach(function (element) {
-          placesList.append(createCard(element, deleteCard, likeCard, unlikeCard, viewCard));
-        })
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  }
-})
 
 avatarButton.addEventListener("click", (evt) => {
   clearValidation(popupAvatar);
@@ -116,7 +103,7 @@ function handleFormSubmitAddNewCard(evt) {
   };
   postCard(popup.querySelector('input[name="place-name"]').value, popup.querySelector('input[name="link"]').value)
     .then((result) => {
-      placesList.insertBefore(createCard(result, deleteCard, likeCard, unlikeCard, viewCard),placesList.firstChild)
+      placesList.insertBefore(createCard(result, deleteCard, likeCard, unlikeCard, viewCard,userId),placesList.firstChild)
     })
     .catch(error => {
       console.log(error);

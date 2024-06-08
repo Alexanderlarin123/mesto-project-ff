@@ -83,7 +83,8 @@ function clearValidation(formElement){
         hideInputError(formElement, inputElement);
     })
     formElement.querySelector(validationConfig.submitButtonSelector).disable== true;
-    formElement.querySelector(validationConfig.submitButtonSelector).classList.add(validationConfig.inactiveButtonClass);;
+    formElement.querySelector(validationConfig.submitButtonSelector).classList.add(validationConfig.inactiveButtonClass);
+    formElement.querySelector(validationConfig.submitButtonSelector).textContent="Сохранить";
 }
 
 export { enableValidation,clearValidation};
