@@ -86,6 +86,4 @@ function clearValidation(formElement){
     formElement.querySelector(validationConfig.submitButtonSelector).classList.add(validationConfig.inactiveButtonClass);;
 }
 
-
-
-export { enableValidation, hideInputError,clearValidation};
+export { enableValidation,clearValidation};

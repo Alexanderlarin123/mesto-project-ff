@@ -3,10 +3,17 @@ export { getProfileInfo, patchProfileInfo, getCards, postCard, deleteCard, patch
 const token = "883e0234-47f8-49e4-92ee-690f5802db36";
 const cohort = "wff-cohort-14";
 
+function handleResponse(result){
+    if (!result.ok) { 
+        return Promise.reject(`Ошибка: ${result.status}`); 
+    } 
+    return result.json(); 
+}
+
 const config = {
     baseUrl: 'https://nomoreparties.co/v1/wff-cohort-14',
     headers: {
-        authorization: '883e0234-47f8-49e4-92ee-690f5802db36',
+        authorization: token,
         'Content-Type': 'application/json'
     }
 }

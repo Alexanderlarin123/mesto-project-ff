@@ -14,8 +14,7 @@ import {
 } from "./components/modal.js"
 import {
   enableValidation,
-  clearValidation,
-  hideInputError
+  clearValidation
 } from "./components/validation.js"
 import {
   getProfileInfo,
@@ -34,7 +33,6 @@ const newCardButton = document.querySelector('.profile__add-button');
 const avatarButton = document.querySelector('.profile__image');
 const placesList = document.querySelector('.places__list');
 const popupEdit = document.querySelector('.popup_type_edit');
-//hideInputError(popupEdit, popupEdit.querySelector('input[name="description"]'));
 const popupNewCard = document.querySelector('.popup_type_new-card');
 const popupAvatar = document.querySelector('.popup_type_avatar');
 
@@ -48,33 +46,11 @@ let userId;
 Promise.all([getProfileInfo(), getCards()])
 .then(([userData, cards]) => {
     userId = userData._id;
-    //отрисовка данных профиля
     updateProfileInfo(userData.name, userData.about, userData.avatar)
-    //отрисовка нач карточек
     cards.forEach(function (element) {
       placesList.append(createCard(element, deleteCard, likeCard, unlikeCard, viewCard));
     })
 }).catch(error => console.log(error))
-
-
-/* getProfileInfo()
-.then((result) => {
-updateProfileInfo(result.name, result.about, result.avatar);
-})
-.catch(error => {
-console.log(error);
-});
-
-getCards()
-.then((result) => {
-placesList.innerHTML = '';
-result.forEach(function (element) {
-placesList.append(createCard(element, deleteCard, likeCard, unlikeCard, viewCard));
-})
-})
-.catch(error => {
-console.log(error);
-}); */
 
 
 placesList.addEventListener("click", (evt) => {
@@ -93,16 +69,12 @@ placesList.addEventListener("click", (evt) => {
 })
 
 avatarButton.addEventListener("click", (evt) => {
-  //hideInputError(popupAvatar, popupAvatar.querySelector('input[name="link"]'));
   clearValidation(popupAvatar);
   popupAvatar.querySelector('input[name="link"]').value = "";
   openPopup(popupAvatar);
 });
 
-//Add event listener for the buttons: profile_edit and add_new_card
 profileEditButton.addEventListener("click", (evt) => {
-  //hideInputError(popupEdit, popupEdit.querySelector('input[name="name"]'));
-  //hideInputError(popupEdit, popupEdit.querySelector('input[name="description"]'));
   clearValidation(popupEdit);
   openPopup(popupEdit);
   popupEdit.querySelector('input[name="name"]').value = document.querySelector('.profile__title').textContent;
@@ -110,8 +82,6 @@ profileEditButton.addEventListener("click", (evt) => {
 });
 
 newCardButton.addEventListener("click", (evt) => {
-  //hideInputError(popupNewCard, popupNewCard.querySelector('input[name="place-name"]'));
-  //hideInputError(popupNewCard, popupNewCard.querySelector('input[name="link"]'));
   clearValidation(popupNewCard);
   popupNewCard.querySelector('input[name="place-name"]').value = "";
   popupNewCard.querySelector('input[name="link"]').value = "";
@@ -133,13 +103,6 @@ function handleFormSubmitEdit(evt) {
     .catch(error => {
       console.log(error);
     });
-/* getProfileInfo()
-  .then((result) => {
-    updateProfileInfo(result.name, result.about, result.avatar)
-  })
-  .catch(error => {
-    console.log(error);
-  }); */
   closePopup(popup);
 }
 
@@ -151,23 +114,9 @@ function handleFormSubmitAddNewCard(evt) {
     name: popup.querySelector('input[name="place-name"]').value,
     link: popup.querySelector('input[name="link"]').value
   };
-  /* newCardData.name = popup.querySelector('input[name="place-name"]').value;
-  newCardData.link = popup.querySelector('input[name="link"]').value; */
   postCard(popup.querySelector('input[name="place-name"]').value, popup.querySelector('input[name="link"]').value)
     .then((result) => {
-      //console.log(result)
-      //placesList.append(createCard(result, deleteCard, likeCard, unlikeCard, viewCard))
       placesList.insertBefore(createCard(result, deleteCard, likeCard, unlikeCard, viewCard),placesList.firstChild)
-      /* getCards()
-        .then((result) => {
-          placesList.innerHTML = '';
-          result.forEach(function (element) {
-            placesList.append(createCard(element, deleteCard, likeCard, unlikeCard, viewCard));
-          })
-        })
-        .catch(error => {
-          console.log(error);
-        }); */
     })
     .catch(error => {
       console.log(error);
@@ -193,13 +142,6 @@ function handleFormSubmitAvatar(evt) {
     });
 
   popup.querySelector('input[name="link"]').value = "";
-  /* getProfileInfo()
-    .then((result) => {
-      updateProfileInfo(result.name, result.about, result.avatar)
-    })
-    .catch(error => {
-      console.log(error);
-    }); */
   closePopup(popup);
 }
 
