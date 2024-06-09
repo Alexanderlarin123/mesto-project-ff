@@ -3,21 +3,12 @@ export { getProfileInfo, patchProfileInfo, getCards, postCard, deleteCard, patch
 const token = "883e0234-47f8-49e4-92ee-690f5802db36";
 const cohort = "wff-cohort-14";
 
-function handleResponse(result){
-    if (!result.ok) { 
-        return Promise.reject(`Ошибка: ${result.status}`); 
-    } 
-    return result.json(); 
-}
-
-const config = {
-    baseUrl: 'https://nomoreparties.co/v1/wff-cohort-14',
-    headers: {
-        authorization: token,
-        'Content-Type': 'application/json'
+function handleResponse(result) {
+    if (!result.ok) {
+        return Promise.reject(`Ошибка: ${result.status}`);
     }
+    return result.json();
 }
-
 
 function getProfileInfo() {
     return fetch(`https://nomoreparties.co/v1/${cohort}/users/me`, {
@@ -25,13 +16,7 @@ function getProfileInfo() {
             authorization: token
         }
     })
-        .then(response => {
-            if (!response.ok) {
-                return Promise.reject(`Ошибка: ${res.status}`);
-            }
-            return response.json(); // Parse the response as JSON
-        });
-
+        .then(response => handleResponse(response))
 }
 
 function patchProfileInfo(name, about) {
@@ -46,14 +31,8 @@ function patchProfileInfo(name, about) {
             about: about
         })
     })
-        .then(response => {
-            if (!response.ok) {
-                return Promise.reject(`Ошибка: ${res.status}`);
-            }
-            return response.json(); // Parse the response as JSON
-        });
+        .then(response => handleResponse(response))
 };
-
 
 
 function getCards() {
@@ -62,12 +41,7 @@ function getCards() {
             authorization: token
         }
     })
-        .then(response => {
-            if (!response.ok) {
-                return Promise.reject(`Ошибка: ${res.status}`);
-            }
-            return response.json(); // Parse the response as JSON
-        });
+        .then(response => handleResponse(response))
 }
 
 function postCard(name, link) {
@@ -82,12 +56,7 @@ function postCard(name, link) {
             link: link
         })
     })
-        .then(response => {
-            if (!response.ok) {
-                return Promise.reject(`Ошибка: ${res.status}`);
-            }
-            return response.json(); // Parse the response as JSON
-        });
+        .then(response => handleResponse(response))
 }
 
 function deleteCard(cardId) {
@@ -98,12 +67,7 @@ function deleteCard(cardId) {
             'Content-Type': 'application/json'
         }
     })
-        .then(response => {
-            if (!response.ok) {
-                return Promise.reject(`Ошибка: ${res.status}`);
-            }
-            return response.json(); // Parse the response as JSON
-        })
+        .then(response => handleResponse(response))
 }
 
 function patchAvatar(link) {
@@ -117,12 +81,7 @@ function patchAvatar(link) {
             avatar: link
         })
     })
-        .then(response => {
-            if (!response.ok) {
-                return Promise.reject(`Ошибка: ${res.status}`);
-            }
-            return response.json(); // Parse the response as JSON
-        })
+        .then(response => handleResponse(response))
 }
 
 function likeCard(cardId) {
@@ -133,12 +92,7 @@ function likeCard(cardId) {
             'Content-Type': 'application/json'
         },
     })
-        .then(response => {
-            if (!response.ok) {
-                return Promise.reject(`Ошибка: ${res.status}`);
-            }
-            return response.json(); // Parse the response as JSON
-        })
+        .then(response => handleResponse(response))
 }
 
 function unlikeCard(cardId) {
@@ -149,10 +103,5 @@ function unlikeCard(cardId) {
             'Content-Type': 'application/json'
         },
     })
-        .then(response => {
-            if (!response.ok) {
-                return Promise.reject(`Ошибка: ${res.status}`);
-            }
-            return response.json(); // Parse the response as JSON
-        })
+        .then(response => handleResponse(response))
 }
