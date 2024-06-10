@@ -27,6 +27,15 @@ import {
   unlikeCard
 } from "./components/api.js"
 
+const validationConfig = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'button_inactive',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__input-error_active'
+}
+
 //DOM узлы
 const profileEditButton = document.querySelector('.profile__edit-button');
 const newCardButton = document.querySelector('.profile__add-button');
@@ -35,6 +44,7 @@ const placesList = document.querySelector('.places__list');
 const popupEdit = document.querySelector('.popup_type_edit');
 const popupNewCard = document.querySelector('.popup_type_new-card');
 const popupAvatar = document.querySelector('.popup_type_avatar');
+
 
 function updateProfileInfo(name, about, avatar) {
   document.querySelector('.profile__title').textContent = name;
@@ -45,31 +55,29 @@ function updateProfileInfo(name, about, avatar) {
 let userId;
 Promise.all([getProfileInfo(), getCards()])
   .then(([userData, cards]) => {
-    console.log(userData);
-    console.log(cards);
     userId = userData._id;
     updateProfileInfo(userData.name, userData.about, userData.avatar)
     cards.forEach(function (element) {
-      placesList.append(createCard(element, deleteCard, likeCard, unlikeCard, viewCard, userId));
+      placesList.append(createCard(element, deleteCard, likeCallback, viewCard, userId));
     })
   }).catch(error => console.log(error))
 
 
 avatarButton.addEventListener("click", (evt) => {
-  clearValidation(popupAvatar);
+  clearValidation(validationConfig,popupAvatar);
   popupAvatar.querySelector('input[name="link"]').value = "";
   openPopup(popupAvatar);
 });
 
 profileEditButton.addEventListener("click", (evt) => {
-  clearValidation(popupEdit);
+  clearValidation(validationConfig,popupEdit);
   openPopup(popupEdit);
   popupEdit.querySelector('input[name="name"]').value = document.querySelector('.profile__title').textContent;
   popupEdit.querySelector('input[name="description"]').value = document.querySelector('.profile__description').textContent;
 });
 
 newCardButton.addEventListener("click", (evt) => {
-  clearValidation(popupNewCard);
+  clearValidation(validationConfig,popupNewCard);
   popupNewCard.querySelector('input[name="place-name"]').value = "";
   popupNewCard.querySelector('input[name="link"]').value = "";
   openPopup(popupNewCard);
@@ -88,7 +96,10 @@ function handleFormSubmitEdit(evt) {
       updateProfileInfo(result.name, result.about, result.avatar)
     })
     .catch(error => {
-      console.log(error);
+      console.log(error)
+    })
+    .finally(() => {
+      evt.target.querySelector('.popup__button').textContent ="Сохранить"
     });
   closePopup(popup);
 }
@@ -103,11 +114,15 @@ function handleFormSubmitAddNewCard(evt) {
   };
   postCard(popup.querySelector('input[name="place-name"]').value, popup.querySelector('input[name="link"]').value)
     .then((result) => {
-      placesList.insertBefore(createCard(result, deleteCard, likeCard, unlikeCard, viewCard, userId), placesList.firstChild)
+      placesList.insertBefore(createCard(result, deleteCard, likeCallback, viewCard, userId), placesList.firstChild)
     })
     .catch(error => {
       console.log(error);
+    })
+    .finally(() => {
+      evt.target.querySelector('.popup__button').textContent ="Сохранить"
     });
+
   popup.querySelector('input[name="place-name"]').value = "";
   popup.querySelector('input[name="link"]').value = "";
   closePopup(popup);
@@ -124,6 +139,9 @@ function handleFormSubmitAvatar(evt) {
     })
     .catch(error => {
       console.log(error);
+    })
+    .finally(() => {
+      evt.target.querySelector('.popup__button').textContent ="Сохранить"
     });
   popup.querySelector('input[name="link"]').value = "";
   closePopup(popup);
@@ -138,9 +156,19 @@ function viewCard(name, link) {
   openPopup(popupImage);
 }
 
+function likeCallback (cardId, likeBtn, likeCounter){
+  const likeMethod = likeBtn.classList.contains('card__like-button_is-active') ? unlikeCard : likeCard;
+  likeMethod(cardId) 
+          .then((res) => {
+             likeCounter.textContent = res.likes.length; 
+             likeBtn.classList.toggle("card__like-button_is-active"); 
+          })
+  .catch(err => console.log(err));
+  }
+
 document.querySelectorAll('.popup').forEach(function (element) {
   setClosePopupEventListeners(element);
 });
 
-enableValidation();
+enableValidation(validationConfig);
 
